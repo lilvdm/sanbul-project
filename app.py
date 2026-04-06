@@ -44,10 +44,13 @@ def prediction():
             if hasattr(input_prepared, "toarray"):
                 input_prepared = input_prepared.toarray()
 
-            return f"Pipeline OK. Shape: {input_prepared.shape}"
+            pred_log = model.predict(input_prepared, verbose=0)[0][0]
+            pred_real = float(np.exp(pred_log) - 1)
+
+            return f"Prediction OK: {pred_real}"
 
         except Exception as e:
-            return f"Pipeline failed: {e}", 500
+            return f"Model failed: {e}", 500
 
     return render_template("prediction.html")
 
