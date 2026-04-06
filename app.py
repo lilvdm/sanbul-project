@@ -26,7 +26,7 @@ def index():
 @app.route("/prediction", methods=["GET", "POST"])
 def prediction():
     if request.method == "POST":
-        return "POST works"
+        return render_template("result.html", prediction=123.45)
 
     return render_template("prediction.html")
 
