@@ -26,25 +26,38 @@ def index():
 @app.route("/prediction", methods=["GET", "POST"])
 def prediction():
     if request.method == "POST":
-        data = {
-            "longitude": [float(request.form["longitude"])],
-            "latitude": [float(request.form["latitude"])],
-            "month": [request.form["month"]],
-            "day": [request.form["day"]],
-            "avg_temp": [float(request.form["avg_temp"])],
-            "max_temp": [float(request.form["max_temp"])],
-            "max_wind_speed": [float(request.form["max_wind_speed"])],
-            "avg_wind": [float(request.form["avg_wind"])]
-        }
+        try:
+            print("FORM DATA:", dict(request.form))
 
-        input_df = pd.DataFrame(data)
-        input_prepared = pipeline.transform(input_df)
-        input_prepared = input_prepared.toarray() if hasattr(input_prepared, "toarray") else input_prepared
+            data = {
+                "longitude": [float(request.form["longitude"])],
+                "latitude": [float(request.form["latitude"])],
+                "month": [request.form["month"].strip()],
+                "day": [request.form["day"].strip()],
+                "avg_temp": [float(request.form["avg_temp"])],
+                "max_temp": [float(request.form["max_temp"])],
+                "max_wind_speed": [float(request.form["max_wind_speed"])],
+                "avg_wind": [float(request.form["avg_wind"])]
+            }
 
-        pred_log = model.predict(input_prepared)[0][0]
-        pred_real = np.exp(pred_log) - 1
+            input_df = pd.DataFrame(data)
+            print("INPUT_DF:", input_df)
 
-        return render_template("result.html", prediction=round(pred_real, 2))
+            input_prepared = pipeline.transform(input_df)
+
+            if hasattr(input_prepared, "toarray"):
+                input_prepared = input_prepared.toarray()
+
+            pred_log = model.predict(input_prepared, verbose=0)[0][0]
+            pred_real = float(np.exp(pred_log) - 1)
+
+            print("PREDICTION:", pred_real)
+
+            return render_template("result.html", prediction=round(pred_real, 2))
+
+        except Exception as e:
+            print("ERROR:", e)
+            return f"Error occurred: {e}", 500
 
     return render_template("prediction.html")
 
