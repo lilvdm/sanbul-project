@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>산불 예측 입력</title>
+</head>
+<body>
+    <h1>Fill in the data</h1>
+
+    <form action="/prediction" method="post">
+        <p>longitude: <input type="text" name="longitude" required></p>
+        <p>latitude: <input type="text" name="latitude" required></p>
+        <p>month(01-Jan ~ 12-Dec): <input type="text" name="month" required></p>
+        <p>day(00-sun ~ 06-sat, 07-hol): <input type="text" name="day" required></p>
+        <p>avg_temp: <input type="text" name="avg_temp" required></p>
+        <p>max_temp: <input type="text" name="max_temp" required></p>
+        <p>max_wind_speed: <input type="text" name="max_wind_speed" required></p>
+        <p>avg_wind: <input type="text" name="avg_wind" required></p>
+        <button type="submit">Submit</button>
+    </form>
+
+    <br>
+    <a href="/">Home</a>
+</body>
+</html>
