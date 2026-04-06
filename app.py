@@ -27,8 +27,6 @@ def index():
 def prediction():
     if request.method == "POST":
         try:
-            print("FORM DATA:", dict(request.form))
-
             data = {
                 "longitude": [float(request.form["longitude"])],
                 "latitude": [float(request.form["latitude"])],
@@ -41,23 +39,18 @@ def prediction():
             }
 
             input_df = pd.DataFrame(data)
-            print("INPUT_DF:", input_df)
-
             input_prepared = pipeline.transform(input_df)
-
             if hasattr(input_prepared, "toarray"):
                 input_prepared = input_prepared.toarray()
 
             pred_log = model.predict(input_prepared, verbose=0)[0][0]
             pred_real = float(np.exp(pred_log) - 1)
 
-            print("PREDICTION:", pred_real)
-
             return render_template("result.html", prediction=round(pred_real, 2))
 
         except Exception as e:
-            print("ERROR:", e)
-            return f"Error occurred: {e}", 500
+            print("ERROR IN MODEL STEP:", repr(e))
+            return f"Model failed: {e}", 500
 
     return render_template("prediction.html")
 
