@@ -26,31 +26,7 @@ def index():
 @app.route("/prediction", methods=["GET", "POST"])
 def prediction():
     if request.method == "POST":
-        try:
-            data = {
-                "longitude": [float(request.form["longitude"])],
-                "latitude": [float(request.form["latitude"])],
-                "month": [request.form["month"].strip()],
-                "day": [request.form["day"].strip()],
-                "avg_temp": [float(request.form["avg_temp"])],
-                "max_temp": [float(request.form["max_temp"])],
-                "max_wind_speed": [float(request.form["max_wind_speed"])],
-                "avg_wind": [float(request.form["avg_wind"])]
-            }
-
-            input_df = pd.DataFrame(data)
-            input_prepared = pipeline.transform(input_df)
-            if hasattr(input_prepared, "toarray"):
-                input_prepared = input_prepared.toarray()
-
-            pred_log = model.predict(input_prepared, verbose=0)[0][0]
-            pred_real = float(np.exp(pred_log) - 1)
-
-            return render_template("result.html", prediction=round(pred_real, 2))
-
-        except Exception as e:
-            print("ERROR IN MODEL STEP:", repr(e))
-            return f"Model failed: {e}", 500
+        return "POST works"
 
     return render_template("prediction.html")
 
