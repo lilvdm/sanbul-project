@@ -26,7 +26,28 @@ def index():
 @app.route("/prediction", methods=["GET", "POST"])
 def prediction():
     if request.method == "POST":
-        return render_template("result.html", prediction=123.45)
+        try:
+            data = {
+                "longitude": [float(request.form["longitude"])],
+                "latitude": [float(request.form["latitude"])],
+                "month": [request.form["month"].strip()],
+                "day": [request.form["day"].strip()],
+                "avg_temp": [float(request.form["avg_temp"])],
+                "max_temp": [float(request.form["max_temp"])],
+                "max_wind_speed": [float(request.form["max_wind_speed"])],
+                "avg_wind": [float(request.form["avg_wind"])]
+            }
+
+            input_df = pd.DataFrame(data)
+            input_prepared = pipeline.transform(input_df)
+
+            if hasattr(input_prepared, "toarray"):
+                input_prepared = input_prepared.toarray()
+
+            return f"Pipeline OK. Shape: {input_prepared.shape}"
+
+        except Exception as e:
+            return f"Pipeline failed: {e}", 500
 
     return render_template("prediction.html")
 
